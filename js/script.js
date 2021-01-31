@@ -75,7 +75,7 @@ function createModal(arr) {
 
     // GENERATE MARKUP FOR THE MODAL
     modalDiv = `
-      <div class ="modal-container">
+      <div class ="modal-container hidden">
         <div class="modal">
           <button type="button" id="modal-close-btn" class="modal-close-btn"><strong>X</strong></button>
           <div class="modal-info-container">
@@ -136,10 +136,12 @@ const modal = document.querySelector('.modal-container');
 // Modal
 function openModal() {
   modal.classList.remove('hidden');
+  overlay.classList.remove('hidden');
 }
 
 function closeModal() {
   modal.classList.add('hidden');
+  overlay.classList.add('hidden');
 }
 
 // ------------------------------------------
