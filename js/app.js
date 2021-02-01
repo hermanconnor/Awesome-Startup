@@ -1,14 +1,17 @@
+// ------------------------------------------
+//  GLOBAL VARIABLES
+// ------------------------------------------
 const gallery = document.getElementById('gallery');
-const search = document.querySelector('.search-container');
+const searchContainer = document.querySelector('.search-container');
 const body = document.querySelector('body');
 // ------------------------------------------
 //  FETCH FUNCTIONS
 // ------------------------------------------
 async function fetchData(url) {
   try {
-    const response = await fetch(url);
-    const data = await response.json();
-    return data;
+    const status = await fetch(url);
+    const response = await checkStatus(status);
+    return response.json();
   } catch (error) {
     return console.log('Looks like there was a problem!', error);
   }
@@ -19,7 +22,20 @@ fetchData('https://randomuser.me/api/?results=12&nat=us').then(data => {
   displayEmployees(data.results);
 });
 
-// DISPLAY EMPLOYEES ON PAGE
+// ------------------------------------------
+//  HELPER FUNCTIONS
+// ------------------------------------------
+function checkStatus(response) {
+  if (response.ok) {
+    return Promise.resolve(response);
+  } else {
+    return Promise.reject(new Error(response.statusText));
+  }
+}
+
+// ------------------------------------------
+//  DISPLAY EMPLOYEES
+// ------------------------------------------
 function displayEmployees(employees) {
   let htmlString;
 
@@ -29,39 +45,45 @@ function displayEmployees(employees) {
     gallery.appendChild(divCard);
 
     htmlString = `
-  
-    <div class="card-img-container">
-      <img class="card-img" src=${employee.picture.large} alt="profile picture">
-    </div>
-    <div class="card-info-container">
-      <h3 id="name" class="card-name cap">${employee.name.first} ${employee.name.last}</h3>
-      <p class="card-text">${employee.email}</p>
-      <p class="card-text cap">${employee.location.city}, ${employee.location.state}</p>
-    </div>
-  
-  `;
+      <div class="card-img-container">
+        <img class="card-img" src=${employee.picture.large} alt="profile picture">
+      </div>
+      <div class="card-info-container">
+        <h3 id="name" class="card-name cap">${employee.name.first} ${employee.name.last}</h3>
+        <p class="card-text">${employee.email}</p>
+        <p class="card-text cap">${employee.location.city}, ${employee.location.state}</p>
+      </div>
+      `;
+
     divCard.insertAdjacentHTML('beforeend', htmlString);
     divCard.addEventListener('click', () => {
       createModal(employees, index);
     });
   });
 }
-// GENERATE THE SEARCH INPUT
+
+// ------------------------------------------
+//  CREATE SEARCH INPUT
+// ------------------------------------------
 function createForm() {
-  const form = `
-    <form action="#" method="get">
-      <input type="search" id="search-input" class="search-input" placeholder="Search...">
-      <input type="submit" value="&#x1F50D;" id="search-submit" class="search-submit">
-  </form>
+  const form = document.createElement('form');
+  form.action = '#';
+  form.method = 'get';
+  searchContainer.appendChild(form);
+  let inputString = `
+    <input type="search" id="search-input" class="search-input" placeholder="Search...">
+    <input type="submit" value="&#x1F50D;" id="search-submit" class="search-submit">
     `;
 
-  search.insertAdjacentHTML('beforeend', form);
+  form.insertAdjacentHTML('beforeend', inputString);
 }
 createForm();
 
-// GENERATE MARKUP FOR THE MODAL
+// ------------------------------------------
+//  GENERATE MARKUP FOR MODAL
+// ------------------------------------------
 function createModal(data, index) {
-  const employee = data[index];
+  let employee = data[index];
   let modalDiv;
   let buttonString;
   let birthday = new Date(employee.dob.date);
@@ -101,10 +123,39 @@ function createModal(data, index) {
   `;
   buttonContainer.insertAdjacentHTML('beforeend', buttonString);
 
+  // CLOSE MODAL
   const closeBtn = document.querySelector('.modal-close-btn');
 
   closeBtn.addEventListener('click', () => {
     modalContainer.remove();
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      modalContainer.remove();
+    }
+  });
+
+  // NEXT/PREVIOUS BUTTONS
+  const previousButton = document.getElementById('modal-prev');
+  const nextButton = document.getElementById('modal-next');
+
+  nextButton.addEventListener('click', () => {
+    if (data[index + 1] !== undefined) {
+      modalContainer.remove();
+      createModal(data, index + 1);
+    } else {
+      nextButton.disabled = true;
+    }
+  });
+
+  previousButton.addEventListener('click', e => {
+    if (data[index - 1] !== undefined) {
+      modalContainer.remove();
+      createModal(data, index - 1);
+    } else {
+      previousButton.disabled = true;
+    }
   });
 }
 
