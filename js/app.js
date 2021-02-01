@@ -103,19 +103,11 @@ function createModal(data, index) {
 
   const closeBtn = document.querySelector('.modal-close-btn');
 
-  closeBtn.addEventListener('click', e => {
-    if (e.target.innerText) {
-      modalContainer.remove();
-    }
+  closeBtn.addEventListener('click', () => {
+    modalContainer.remove();
   });
 }
 
 // ------------------------------------------
 //  MODAL
 // ------------------------------------------
-function closeModal() {}
-
-/* <div class="modal-btn-container">
-      <button type="button" id="modal-prev" class="modal-prev btn">Prev</button>
-      <button type="button" id="modal-next" class="modal-next btn">Next</button>
-    </div> */
