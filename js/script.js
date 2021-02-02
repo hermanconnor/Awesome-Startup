@@ -4,6 +4,7 @@
 const gallery = document.getElementById('gallery');
 const searchContainer = document.querySelector('.search-container');
 const body = document.querySelector('body');
+
 // ------------------------------------------
 //  FETCH FUNCTIONS
 // ------------------------------------------
@@ -56,32 +57,16 @@ function displayEmployees(employees) {
       `;
 
     divCard.insertAdjacentHTML('beforeend', htmlString);
+    // Add event listener to each card & pass in the create modal function
     divCard.addEventListener('click', () => {
       createModal(employees, index);
     });
   });
 }
 
-// ------------------------------------------
-//  CREATE SEARCH INPUT
-// ------------------------------------------
-function createForm() {
-  const form = document.createElement('form');
-  form.action = '#';
-  form.method = 'get';
-  searchContainer.appendChild(form);
-  let inputString = `
-    <input type="search" id="search-input" class="search-input" placeholder="Search...">
-    <input type="submit" value="&#x1F50D;" id="search-submit" class="search-submit">
-    `;
-
-  form.insertAdjacentHTML('beforeend', inputString);
-}
-createForm();
-
-// ------------------------------------------
-//  GENERATE MARKUP FOR MODAL
-// ------------------------------------------
+//------------------------------------------
+// GENERATE MARKUP FOR MODAL
+//------------------------------------------
 function createModal(data, index) {
   let employee = data[index];
   let modalDiv;
@@ -159,6 +144,38 @@ function createModal(data, index) {
   });
 }
 
-// ------------------------------------------
-//  MODAL
-// ------------------------------------------
+//------------------------------------------
+// CREATE SEARCH INPUT
+//------------------------------------------
+function createForm() {
+  const form = document.createElement('form');
+  form.action = '#';
+  form.method = 'get';
+  searchContainer.appendChild(form);
+  let inputString = `
+  <input type="search" id="search-input" class="search-input" placeholder="Search...">
+  <input type="submit" value="&#x1F50D;" id="search-submit" class="search-submit">
+  `;
+
+  form.insertAdjacentHTML('beforeend', inputString);
+}
+createForm();
+
+const input = document.getElementById('search-input');
+const submit = document.getElementById('search-submit');
+
+input.addEventListener('keyup', () => {
+  employeeSearch(input);
+});
+
+function employeeSearch(query) {
+  const employeeNames = document.querySelectorAll('.card-name');
+
+  for (let name of employeeNames) {
+    if (name.innerText.toLowerCase().includes(query.value.toLowerCase())) {
+      name.parentElement.parentElement.style.display = '';
+    } else {
+      name.parentElement.parentElement.style.display = 'none';
+    }
+  }
+}
