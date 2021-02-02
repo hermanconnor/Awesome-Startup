@@ -135,7 +135,6 @@ function createModal(data, index) {
       index = 0;
       modalContainer.remove();
       createModal(data, index);
-      // nextButton.disabled = true;
     }
   });
 
@@ -147,7 +146,6 @@ function createModal(data, index) {
       index = 11;
       modalContainer.remove();
       createModal(data, index);
-      // previousButton.disabled = true;
     }
   });
 }
@@ -171,11 +169,13 @@ function createForm() {
 }
 createForm();
 
+//------------------------------------------
 // FILTER EMPLOYEES BY NAME
+//------------------------------------------
 const input = document.getElementById('search-input');
 const submit = document.getElementById('search-submit');
 
-// Add event listeners
+// ADD EVENT LISTENERS
 input.addEventListener('keyup', () => {
   employeeSearch(input);
 });
@@ -184,7 +184,7 @@ submit.addEventListener('click', () => {
   employeeSearch(input);
 });
 
-// Filter function
+// FILTER FUNCTION
 function employeeSearch(search) {
   const employeeNames = document.querySelectorAll('.card-name');
   const query = search.value.toLowerCase();
