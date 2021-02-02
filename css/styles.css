@@ -99,6 +99,11 @@ header h1 {
   overflow: hidden;
 }
 
+.card:hover {
+  transform: scale(1.1);
+  color: #33c3f0;
+}
+
 .card-img {
   width: 95px;
   margin: 10px 15px auto 10px;

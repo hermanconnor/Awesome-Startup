@@ -41,6 +41,7 @@ function displayEmployees(employees) {
   let htmlString;
 
   employees.forEach((employee, index) => {
+    // CREATE & APPEND EMPLOYEE CARD MARKUP
     const divCard = document.createElement('div');
     divCard.className = 'card';
     gallery.appendChild(divCard);
@@ -55,8 +56,8 @@ function displayEmployees(employees) {
         <p class="card-text cap">${employee.location.city}, ${employee.location.state}</p>
       </div>
       `;
-
     divCard.insertAdjacentHTML('beforeend', htmlString);
+
     // Add event listener to each card & pass in the create modal function
     divCard.addEventListener('click', () => {
       createModal(employees, index);
@@ -65,7 +66,7 @@ function displayEmployees(employees) {
 }
 
 //------------------------------------------
-// GENERATE MARKUP FOR MODAL
+// GENERATE & APPEND MARKUP FOR MODAL
 //------------------------------------------
 function createModal(data, index) {
   let employee = data[index];
@@ -77,7 +78,7 @@ function createModal(data, index) {
   let year = birthday.getFullYear();
   let formattedBirthday = `${month} / ${day} / ${year}`;
   let address = `${employee.location.street.number} ${employee.location.street.name}, ${employee.location.city}, ${employee.location.state} ${employee.location.postcode}`;
-
+  // CREATE & APPEND MODAL ELEMENTS
   const modalContainer = document.createElement('div');
   modalContainer.className = 'modal-container';
   body.appendChild(modalContainer);
@@ -99,6 +100,7 @@ function createModal(data, index) {
     `;
   modalContainer.insertAdjacentHTML('beforeend', modalDiv);
 
+  // CREATE & APPEND NEXT/PREV BUTTONS FOR MODAL
   const buttonContainer = document.createElement('div');
   buttonContainer.className = 'modal-btn-container';
   modalContainer.appendChild(buttonContainer);
@@ -108,7 +110,7 @@ function createModal(data, index) {
   `;
   buttonContainer.insertAdjacentHTML('beforeend', buttonString);
 
-  // CLOSE MODAL
+  // CLOSE MODAL FUNCTIONALITY
   const closeBtn = document.querySelector('.modal-close-btn');
 
   closeBtn.addEventListener('click', () => {
@@ -121,7 +123,7 @@ function createModal(data, index) {
     }
   });
 
-  // NEXT/PREVIOUS BUTTONS
+  // NEXT/PREVIOUS BUTTON FUNCTIONALITY
   const previousButton = document.getElementById('modal-prev');
   const nextButton = document.getElementById('modal-next');
 
@@ -130,7 +132,10 @@ function createModal(data, index) {
       modalContainer.remove();
       createModal(data, index + 1);
     } else {
-      nextButton.disabled = true;
+      index = 0;
+      modalContainer.remove();
+      createModal(data, index);
+      // nextButton.disabled = true;
     }
   });
 
@@ -139,19 +144,24 @@ function createModal(data, index) {
       modalContainer.remove();
       createModal(data, index - 1);
     } else {
-      previousButton.disabled = true;
+      index = 11;
+      modalContainer.remove();
+      createModal(data, index);
+      // previousButton.disabled = true;
     }
   });
 }
 
 //------------------------------------------
-// CREATE SEARCH INPUT
+// CREATE & APPEND SEARCH INPUT
 //------------------------------------------
 function createForm() {
   const form = document.createElement('form');
   form.action = '#';
   form.method = 'get';
+
   searchContainer.appendChild(form);
+
   let inputString = `
   <input type="search" id="search-input" class="search-input" placeholder="Search...">
   <input type="submit" value="&#x1F50D;" id="search-submit" class="search-submit">
@@ -161,18 +171,26 @@ function createForm() {
 }
 createForm();
 
+// FILTER EMPLOYEES BY NAME
 const input = document.getElementById('search-input');
 const submit = document.getElementById('search-submit');
 
+// Add event listeners
 input.addEventListener('keyup', () => {
   employeeSearch(input);
 });
 
-function employeeSearch(query) {
+submit.addEventListener('click', () => {
+  employeeSearch(input);
+});
+
+// Filter function
+function employeeSearch(search) {
   const employeeNames = document.querySelectorAll('.card-name');
+  const query = search.value.toLowerCase();
 
   for (let name of employeeNames) {
-    if (name.innerText.toLowerCase().includes(query.value.toLowerCase())) {
+    if (name.innerText.toLowerCase().includes(query)) {
       name.parentElement.parentElement.style.display = '';
     } else {
       name.parentElement.parentElement.style.display = 'none';
